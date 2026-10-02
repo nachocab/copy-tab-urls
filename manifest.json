@@ -3,7 +3,7 @@
   "name": "Copy Selected Tab URLs",
   "version": "1.0",
   "description": "Copies the URLs of the selected (highlighted) tabs to the clipboard, one per line.",
-  "permissions": ["tabs"],
+  "permissions": ["tabs", "clipboardWrite"],
   "action": {
     "default_title": "Copy selected tab URLs",
     "default_popup": "popup.html"
