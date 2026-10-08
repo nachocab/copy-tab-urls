@@ -3,7 +3,11 @@
   "name": "Copy Selected Tab URLs",
   "version": "1.0",
   "description": "Copies the selected (highlighted) tabs to the clipboard as \"Title # URL\" lines, or as plain URLs.",
-  "permissions": ["tabs", "clipboardWrite"],
+  "permissions": ["tabs", "clipboardWrite", "offscreen"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "action": {
     "default_title": "Copy selected tabs",
     "default_popup": "popup.html"
@@ -14,6 +18,18 @@
         "default": "Ctrl+Shift+U",
         "mac": "Command+Shift+U"
       }
+    },
+    "copy-urls": {
+      "suggested_key": {
+        "default": "Alt+Shift+U"
+      },
+      "description": "Copy URLs"
+    },
+    "copy-markdown": {
+      "suggested_key": {
+        "default": "Alt+Shift+M"
+      },
+      "description": "Copy Markdown URLs"
     }
   }
 }

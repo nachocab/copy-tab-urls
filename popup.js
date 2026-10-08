@@ -1,22 +1,9 @@
 // The clipboard write happens here rather than in a service worker because
 // the clipboard is only reachable from a document, which the popup is.
+import { copyViaExecCommand } from "./clipboard.js";
+import { FORMATS } from "./formats.js";
+
 const msg = document.getElementById("msg");
-
-function escapeHtml(s) {
-  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-}
-
-// Each format yields the plain text to copy and, optionally, an HTML version.
-// The markdown format carries HTML links as well because Teams renders pasted
-// HTML links but leaves pasted markdown link syntax as literal text.
-const FORMATS = {
-  titleAndUrl: (tabs) => ({ text: tabs.map((t) => `${t.title} # ${t.url}`).join("\n") }),
-  urlOnly: (tabs) => ({ text: tabs.map((t) => t.url).join("\n") }),
-  markdown: (tabs) => ({
-    text: tabs.map((t) => `[${t.title.replace(/[[\]]/g, "\\$&")}](${t.url.replace(/\(/g, "%28").replace(/\)/g, "%29")})`).join("\n"),
-    html: tabs.map((t) => `<a href="${escapeHtml(t.url)}">${escapeHtml(t.title)}</a>`).join("<br>"),
-  }),
-};
 
 // The popup stays open this long after a copy so the secondary option can be
 // clicked; hovering the popup keeps it open until the pointer leaves.
@@ -30,27 +17,6 @@ function waitForFocus(timeoutMs = 500) {
     window.addEventListener("focus", resolve, { once: true });
     setTimeout(resolve, timeoutMs);
   });
-}
-
-// execCommand("copy") works without focus in extension pages that hold the
-// clipboardWrite permission, so it covers the case where focus never arrives.
-// The copy event handler sets the clipboard data directly, so the textarea
-// only exists to give execCommand a selection to act on.
-function copyViaExecCommand({ text, html }) {
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  document.body.append(textarea);
-  textarea.select();
-  const onCopy = (e) => {
-    e.preventDefault();
-    e.clipboardData.setData("text/plain", text);
-    if (html) e.clipboardData.setData("text/html", html);
-  };
-  document.addEventListener("copy", onCopy, { once: true });
-  const ok = document.execCommand("copy");
-  document.removeEventListener("copy", onCopy);
-  textarea.remove();
-  if (!ok) throw new Error("execCommand('copy') returned false");
 }
 
 async function copy({ text, html }) {
