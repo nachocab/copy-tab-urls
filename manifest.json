@@ -2,10 +2,10 @@
   "manifest_version": 3,
   "name": "Copy Selected Tab URLs",
   "version": "1.0",
-  "description": "Copies the URLs of the selected (highlighted) tabs to the clipboard, one per line.",
+  "description": "Copies the selected (highlighted) tabs to the clipboard as \"Title # URL\" lines, or as plain URLs.",
   "permissions": ["tabs", "clipboardWrite"],
   "action": {
-    "default_title": "Copy selected tab URLs",
+    "default_title": "Copy selected tabs",
     "default_popup": "popup.html"
   },
   "commands": {

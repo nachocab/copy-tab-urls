@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
   </head>
   <body style="font: 13px system-ui; padding: 8px; white-space: nowrap">
-    <span id="msg">Copying…</span>
+    <div id="msg">Copying…</div>
+    <div id="options" style="margin-top: 6px" hidden>
+      <button data-format="urlOnly" data-label="URL">URLs only</button>
+      <button data-format="markdown" data-label="link">Markdown / Teams</button>
+    </div>
     <!-- type="module" is required for the top-level await in popup.js -->
     <script type="module" src="popup.js"></script>
   </body>
