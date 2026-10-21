@@ -56,8 +56,18 @@ async function copyTabs(tabs, format, label) {
 
 const tabs = await chrome.tabs.query({ highlighted: true, currentWindow: true });
 
+// Shortcuts come from chrome.commands so the labels reflect any rebinding made
+// in chrome://extensions/shortcuts; unbound commands report an empty string.
+const shortcuts = Object.fromEntries((await chrome.commands.getAll()).map((c) => [c.name, c.shortcut]));
+
 const options = document.getElementById("options");
 for (const button of options.querySelectorAll("button")) {
+  const shortcut = shortcuts[button.dataset.command];
+  if (shortcut) {
+    const kbd = document.createElement("kbd");
+    kbd.textContent = shortcut;
+    button.append(kbd);
+  }
   button.addEventListener("click", async () => {
     options.hidden = true;
     await copyTabs(tabs, button.dataset.format, button.dataset.label);
